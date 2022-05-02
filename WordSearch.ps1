@@ -21,6 +21,7 @@ function searchArray {
 function checkFile{
 
     ForEach ($x in $searchResult) {
+        $row = New-Object Object
         $pattern = $global:pattern
         Write-Host "Analysing file $x" -ForegroundColor yellow
     
@@ -31,7 +32,10 @@ function checkFile{
 
              else
                  {write-host "String Does Not Exist" -ForegroundColor red  }
-             $global:filesFound = $x + $x
+        #--creates array to be added to the file     
+        $row | Add-Member -MemberType NoteProperty -Name "Word Searched" -Value $pattern
+        $row | Add-Member -MemberType NoteProperty -Name "File Location" -Value $x             
+        $global:array += $row
         
 
         
@@ -100,7 +104,7 @@ Write-Host please check the .log file for the final results -ForegroundColor gre
 Write-Host "file location: $path" -foreground Yellow
 }
 
-function createLog{$array | Export-Csv -Path $path -NoTypeInformation
+function createLog{$global:array | Export-Csv -Path $path -NoTypeInformation
 }
 function Start-Search{
 introduction
@@ -111,7 +115,5 @@ createLog
 releaseMemory
 
 }
-
-
 
 Start-Search
