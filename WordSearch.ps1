@@ -1,13 +1,12 @@
-#$userProfile = $env:USERPROFILE
+$userProfile = $env:USERPROFILE
 $dateToday =  get-date -Format "dd/MM/yyyy"
 $path = "C:\Test\Word Search $(get-date -f dd-MM-yyy).txt"
 $array = @()
 $Document = [string]
 $pattern = [string]
-$searchResult = 0
+$searchResult = [string]
 $file =$Document
 $pwd = pwd
-$filesFound = @()
 
 
 function searchArray {
@@ -99,9 +98,13 @@ Write-Warning "If you want to search for the pattern on a different location ple
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow 
 }
 function footer{
+Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
+Write-Host ""
+Write-Host ""
+Write-Host ""
 Write-Host "            Search completed           " -BackgroundColor green -ForegroundColor Black
-Write-Host please check the .log file for the final results -ForegroundColor green
-Write-Host "file location: $path" -foreground Yellow
+Write-Host "Please check the .log file for the final results"  -BackgroundColor green -ForegroundColor Black
+Write-Host "File location: $path" -foreground Yellow
 }
 
 function createLog{$global:array | Export-Csv -Path $path -NoTypeInformation
