@@ -1,18 +1,20 @@
 $userProfile = $env:USERPROFILE
 $dateToday =  get-date -Format "dd/MM/yyyy"
-$path = "C:\Test\Word Search $(get-date -f dd-MM-yyy).txt"
+$path = "C:\Test\$pattern file search $(get-date -f dd-MM-yyy).txt"
 $array = @()
 $Document = [string]
 $pattern = [string]
+$fileExtension = [string]
 $searchResult = [string]
 $file =$Document
 $pwd = pwd
 
 
+
 function searchArray {
-    $global:pattern = Read-Host "What is text is present on the file?"
-    $fileExtension = Read-Host "What is the file extension"
-    $global:searchResult = Get-ChildItem -Recurse  -filter *.$fileExtension | ForEach-Object {$_.FullName
+    $global:pattern = Read-Host "What text is present on the file you are looking for?"
+    $global:fileExtension = Read-Host "What is the file extension (docx,txt,pdf,xlsx..) ?"
+    $global:searchResult = Get-ChildItem -Recurse  -filter *.$global:fileExtension | ForEach-Object {$_.FullName
     #Write-Host $global:searchResult
     }
 } #-- Get the files and place them on a array
@@ -27,7 +29,7 @@ function checkFile{
              Try{$result = findWord $x $pattern}
              Catch{}
              if ($result -eq "True")
-                 {write-host "String Exist" -ForegroundColor green  }
+                 {write-host "'$global:pattern' pattern exist in file" -ForegroundColor green  }
 
              else
                  {write-host "String Does Not Exist" -ForegroundColor red  }
@@ -94,17 +96,18 @@ Write-Host "You are about to perform a word search on the following location:" -
 Write-Host ""
 Write-Host $pwd -ForegroundColor Yellow
 Write-Host ""
-Write-Warning "If you want to search for the pattern on a different location please change directories and run the script again" 
+Write-Warning "If you want to search for the pattern on a different location `nplease change directories and run the script again" 
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow 
 }
 function footer{
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
+Write-Host "                        Search completed                         " -BackgroundColor green -ForegroundColor Black
 Write-Host ""
+Write-Host "        Please check the .log file for the final results        " -ForegroundColor green
 Write-Host ""
-Write-Host ""
-Write-Host "            Search completed           " -BackgroundColor green -ForegroundColor Black
-Write-Host "Please check the .log file for the final results"  -BackgroundColor green -ForegroundColor Black
-Write-Host "File location: $path" -foreground Yellow
+Write-Host "        Results for files '.$fileExtension' containing the pattern '$global:pattern'" -ForegroundColor green
+Write-Host "        File location: $path" -foreground Yellow
+Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
 }
 
 function createLog{$global:array | Export-Csv -Path $path -NoTypeInformation
