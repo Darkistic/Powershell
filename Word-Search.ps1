@@ -34,7 +34,7 @@ function checkFile{
                  {write-host "'$global:pattern' is present in the file" -ForegroundColor green  }
 
              else
-                 {write-host "$global:pattern does NOT Exist" -ForegroundColor Red  }
+                 {write-host "The words `$global:pattern` does NOT exist in the file" -ForegroundColor Red  }
         #--creates array to be added to the file     
         $row | Add-Member -MemberType NoteProperty -Name "Word Searched" -Value $pattern
         $row | Add-Member -MemberType NoteProperty -Name "File Location" -Value $x             
@@ -107,8 +107,8 @@ Write-Host "                        Search completed                         " -
 Write-Host ""
 Write-Host "        Please check the .log file for the final results        " -ForegroundColor green
 Write-Host ""
-Write-Host "        Results for files '.$fileExtension' containing the pattern '$global:pattern'" -ForegroundColor green
-Write-Host "        File location: $path" -foreground Yellow
+Write-Host "        Successful results for .$fileExtension files  containing the pattern '$global:pattern' are saved in the following location" -ForegroundColor green
+Write-Host "        $path" -foreground Yellow
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
 }#- makes it look good
 
