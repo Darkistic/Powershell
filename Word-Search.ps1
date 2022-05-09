@@ -1,6 +1,6 @@
 $userProfile = $env:USERPROFILE
 $dateToday =  get-date -Format "dd/MM/yyyy"
-$path = "C:\Test\$pattern file search $(get-date -f dd-MM-yyy).txt"
+$path = "$userProfile\Documents\Reports\$pattern WordSearch $(get-date -f dd-MM-yyy).txt"
 $array = @()
 $Document = [string]
 $pattern = [string]
@@ -8,16 +8,18 @@ $fileExtension = [string]
 $searchResult = [string]
 $file =$Document
 $pwd = pwd
+#-------VARs
 
 
-
-function searchArray {
+function retrieveParameters{
     $global:pattern = Read-Host "What text is present on the file you are looking for?"
     $global:fileExtension = Read-Host "What is the file extension (docx,txt,pdf,xlsx..) ?"
+    }#get paraments from user input
+function searchArray {
     $global:searchResult = Get-ChildItem -Recurse  -filter *.$global:fileExtension | ForEach-Object {$_.FullName
-    #Write-Host $global:searchResult
     }
 } #-- Get the files and place them on a array
+
 
 function checkFile{
 
@@ -29,10 +31,10 @@ function checkFile{
              Try{$result = findWord $x $pattern}
              Catch{}
              if ($result -eq "True")
-                 {write-host "'$global:pattern' pattern exist in file" -ForegroundColor green  }
+                 {write-host "'$global:pattern' is present in the file" -ForegroundColor green  }
 
              else
-                 {write-host "String Does Not Exist" -ForegroundColor red  }
+                 {write-host "$global:pattern does NOT Exist" -ForegroundColor Red  }
         #--creates array to be added to the file     
         $row | Add-Member -MemberType NoteProperty -Name "Word Searched" -Value $pattern
         $row | Add-Member -MemberType NoteProperty -Name "File Location" -Value $x             
@@ -78,7 +80,7 @@ function findWord ([string]$file,[string]$FindText) {
  )
 
  $OpenDoc.Close()
-} #--------Open Word Doc and Search for $pattern
+} #--------Open Word Doc and Search for $pattern $fileExtension
 
 function releaseMemory{
  # release memory
@@ -86,19 +88,19 @@ function releaseMemory{
  # call garbage collection
  [gc]::collect()
  [gc]::WaitForPendingFinalizers()
- }
+ }#-- refresh the memory
 
 function introduction{
-sleep 1
+sleep .4
 cls
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
 Write-Host "You are about to perform a word search on the following location:" -foreground yellow -BackgroundColor Black
 Write-Host ""
 Write-Host $pwd -ForegroundColor Yellow
 Write-Host ""
-Write-Warning "If you want to search for the pattern on a different location `nplease change directories and run the script again" 
+Write-Warning "If you want to search for the pattern on a different location `nplease change directories and run the script again." 
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow 
-}
+}#- makes it look good
 function footer{
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
 Write-Host "                        Search completed                         " -BackgroundColor green -ForegroundColor Black
@@ -108,18 +110,19 @@ Write-Host ""
 Write-Host "        Results for files '.$fileExtension' containing the pattern '$global:pattern'" -ForegroundColor green
 Write-Host "        File location: $path" -foreground Yellow
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
-}
+}#- makes it look good
 
 function createLog{$global:array | Export-Csv -Path $path -NoTypeInformation
-}
-function Start-Search{
+} #-guess what this does..
+function Word-Search($global:pattern, $global:fileExtension){
 introduction
+if ($global:pattern -eq $null -and $global:fileExtension -eq $null){retrieveParameters}
 searchArray
 checkFile
 footer
 createLog
 releaseMemory
 
-}
+} #--Main Function
 
-Start-Search
+Word-Search
