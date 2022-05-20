@@ -24,7 +24,7 @@ function searchArray {
 function checkFile{
 
     ForEach ($x in $searchResult) {
-        $row = New-Object Object
+        $row = New-Object PSObject
         $pattern = $global:pattern
         Write-Host "Analysing file $x" -ForegroundColor yellow
     
@@ -34,7 +34,7 @@ function checkFile{
                  {write-host "'$global:pattern' is present in the file" -ForegroundColor green  }
 
              else
-                 {write-host "The words `$global:pattern` does NOT exist in the file" -ForegroundColor Red  }
+                 {write-host "The words '$global:pattern' does NOT exist in the file" -ForegroundColor Red  }
         #--creates array to be added to the file     
         $row | Add-Member -MemberType NoteProperty -Name "Word Searched" -Value $pattern
         $row | Add-Member -MemberType NoteProperty -Name "File Location" -Value $x             
@@ -107,14 +107,14 @@ Write-Host "                        Search completed                         " -
 Write-Host ""
 Write-Host "        Please check the .log file for the final results        " -ForegroundColor green
 Write-Host ""
-Write-Host "        Successful results for .$fileExtension files  containing the pattern '$global:pattern' are saved in the following location" -ForegroundColor green
+Write-Host "        Successful results for .$global:fileExtension files  containing the pattern '$global:pattern' are saved in the following location" -ForegroundColor green
 Write-Host "        $path" -foreground Yellow
 Write-Host "------------------------------------------------------------------" -ForegroundColor Yellow
 }#- makes it look good
 
 function createLog{$global:array | Export-Csv -Path $path -NoTypeInformation
 } #-guess what this does..
-function Word-Search($global:pattern, $global:fileExtension){
+function Search-Word($global:pattern, $global:fileExtension){
 introduction
 if ($global:pattern -eq $null -and $global:fileExtension -eq $null){retrieveParameters}
 searchArray
@@ -125,4 +125,4 @@ releaseMemory
 
 } #--Main Function
 
-Word-Search
+Search-Word
